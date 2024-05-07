@@ -4,6 +4,278 @@
 -- See the kickstart.nvim README for more information
 return {
   {
+    'nvim-tree/nvim-tree.lua',
+    config = function()
+      local use_icons, devicons = pcall(require, 'nvim-web-devicons')
+      local tree = require 'nvim-tree'
+      local function on_attach(bufnr)
+        local api = require 'nvim-tree.api'
+
+        local function opts(desc)
+          return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+        end
+
+        api.config.mappings.default_on_attach(bufnr)
+
+        vim.keymap.set('n', '<Leader>O', '', { buffer = bufnr })
+        vim.keymap.del('n', '<Leader>O', { buffer = bufnr })
+        vim.keymap.set('n', '<Leader>D', '', { buffer = bufnr })
+        vim.keymap.del('n', '<Leader>D', { buffer = bufnr })
+        vim.keymap.set('n', '<Leader>E', '', { buffer = bufnr })
+        vim.keymap.del('n', '<Leader>E', { buffer = bufnr })
+
+        vim.keymap.set('n', '<Leader>A', api.tree.expand_all, opts 'Expand All')
+        vim.keymap.set('n', '<Leader>?', api.tree.toggle_help, opts 'Help')
+        vim.keymap.set('n', '<Leader>C', api.tree.change_root_to_node, opts 'CD')
+        vim.keymap.set('n', '<Leader>P', function()
+          local node = api.tree.get_node_under_cursor()
+          print(node.absolute_path)
+        end, opts 'Print Node Path')
+
+        vim.keymap.set('n', '<Leader>Z', api.node.run.system, opts 'Run System')
+      end
+
+      tree.setup {
+        on_attach = on_attach,
+        auto_reload_on_write = false,
+        disable_netrw = false,
+        hijack_cursor = false,
+        hijack_netrw = true,
+        hijack_unnamed_buffer_when_opening = false,
+        sort_by = 'name',
+        root_dirs = {},
+        prefer_startup_root = false,
+        sync_root_with_cwd = true,
+        reload_on_bufenter = false,
+        respect_buf_cwd = false,
+        select_prompts = false,
+        view = {
+          adaptive_size = false,
+          centralize_selection = true,
+          width = 30,
+          side = 'left',
+          preserve_window_proportions = false,
+          number = false,
+          relativenumber = false,
+          signcolumn = 'yes',
+          float = {
+            enable = false,
+            quit_on_focus_loss = true,
+            open_win_config = {
+              relative = 'editor',
+              border = 'rounded',
+              width = 30,
+              height = 30,
+              row = 1,
+              col = 1,
+            },
+          },
+        },
+        renderer = {
+          add_trailing = false,
+          group_empty = false,
+          highlight_git = true,
+          full_name = false,
+          highlight_opened_files = 'none',
+          root_folder_label = ':t',
+          indent_width = 2,
+          indent_markers = {
+            enable = true,
+            inline_arrows = true,
+            icons = {
+              corner = '└',
+              edge = '│',
+              item = '│',
+              none = ' ',
+            },
+          },
+          icons = {
+            webdev_colors = vim.g.have_nerd_font,
+            git_placement = 'before',
+            padding = ' ',
+            symlink_arrow = ' ➛ ',
+            show = {
+              file = vim.g.have_nerd_font,
+              folder = vim.g.have_nerd_font,
+              folder_arrow = vim.g.have_nerd_font,
+              git = vim.g.have_nerd_font,
+            },
+            glyphs = {
+              default = '󰈔',
+              symlink = '󰈤',
+              bookmark = '󰃀',
+              folder = {
+                arrow_closed = '󰅂',
+                arrow_open = '󰅀',
+                default = '󰉋',
+                open = '󰉓',
+                empty = '󰉖',
+                empty_open = '󰉕',
+                symlink = '󰉒',
+                symlink_open = '󰉒',
+              },
+              git = {
+                unstaged = 'U',
+                staged = 'S',
+                unmerged = 'M',
+                renamed = 'R',
+                untracked = 'U',
+                deleted = 'D',
+                ignored = '◌',
+              },
+            },
+          },
+          special_files = { 'Cargo.toml', 'Makefile', 'README.md', 'readme.md' },
+          symlink_destination = true,
+        },
+        hijack_directories = {
+          enable = false,
+          auto_open = true,
+        },
+        update_focused_file = {
+          enable = true,
+          debounce_delay = 15,
+          update_root = true,
+          ignore_list = {},
+        },
+        diagnostics = {
+          enable = false,
+          show_on_dirs = false,
+          show_on_open_dirs = true,
+          debounce_delay = 50,
+          severity = {
+            min = vim.diagnostic.severity.HINT,
+            max = vim.diagnostic.severity.ERROR,
+          },
+          icons = {
+            hint = '󰁚',
+            info = '󰋽',
+            warning = '󰀪',
+            error = '󰀩',
+          },
+        },
+        filters = {
+          dotfiles = false,
+          git_clean = false,
+          no_buffer = false,
+          custom = { 'node_modules', '\\.cache' },
+          exclude = {},
+        },
+        filesystem_watchers = {
+          enable = true,
+          debounce_delay = 50,
+          ignore_dirs = {},
+        },
+        git = {
+          enable = true,
+          ignore = false,
+          show_on_dirs = true,
+          show_on_open_dirs = true,
+          timeout = 200,
+        },
+        actions = {
+          use_system_clipboard = true,
+          change_dir = {
+            enable = true,
+            global = false,
+            restrict_above_cwd = false,
+          },
+          expand_all = {
+            max_folder_discovery = 300,
+            exclude = {},
+          },
+          file_popup = {
+            open_win_config = {
+              col = 1,
+              row = 1,
+              relative = 'cursor',
+              border = 'shadow',
+              style = 'minimal',
+            },
+          },
+          open_file = {
+            quit_on_open = false,
+            resize_window = false,
+            window_picker = {
+              enable = true,
+              picker = 'default',
+              chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+              exclude = {
+                filetype = { 'notify', 'lazy', 'qf', 'diff', 'fugitive', 'fugitiveblame' },
+                buftype = { 'nofile', 'terminal', 'help' },
+              },
+            },
+          },
+          remove_file = {
+            close_window = true,
+          },
+        },
+        trash = {
+          cmd = 'trash',
+          require_confirm = true,
+        },
+        live_filter = {
+          prefix = '[FILTER]: ',
+          always_show_folders = true,
+        },
+        tab = {
+          sync = {
+            open = false,
+            close = false,
+            ignore = {},
+          },
+        },
+        notify = {
+          threshold = vim.log.levels.INFO,
+        },
+        log = {
+          enable = false,
+          truncate = false,
+          types = {
+            all = false,
+            config = false,
+            copy_paste = false,
+            dev = false,
+            diagnostics = false,
+            git = false,
+            profile = false,
+            watcher = false,
+          },
+        },
+        system_open = {
+          cmd = nil,
+          args = {},
+        },
+      }
+
+      local function open_nvim_tree_on_launch(data)
+        -- buffer is a real file on the disk
+        local real_file = vim.fn.filereadable(data.file) == 1
+        -- buffer is a [No Name]
+        local no_name = data.file == '' and vim.bo[data.buf].buftype == ''
+
+        if not real_file and not no_name then
+          return
+        end
+
+        -- open the tree, find the file but don't focus it
+        require('nvim-tree.api').tree.toggle { focus = false, find_file = true }
+      end
+
+      function NvimTreeCloseIfLast()
+        local only_one = vim.fn.tabpagenr '$' == 1 and vim.fn.winnr '$' == 1
+        local is_visible = require('nvim-tree.view').is_visible()
+
+        if only_one and is_visible then
+          vim.cmd 'quit'
+        end
+      end
+
+      vim.api.nvim_create_autocmd({ 'VimEnter' }, { callback = open_nvim_tree_on_launch })
+      vim.cmd 'autocmd BufEnter * lua NvimTreeCloseIfLast()'
+    end,
+  },
+  {
     'maxmx03/fluoromachine.nvim',
     config = function()
       local fm = require 'fluoromachine'
@@ -18,7 +290,7 @@ return {
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     config = function()
-      -- Better Around/Inside textobjects
+      -- Better Around/Inside textobject
       --
       -- Examples:
       --  - va)  - [V]isually select [A]round [)]paren
