@@ -287,24 +287,24 @@ require('lazy').setup({
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
-    config = function() -- This is the function that runs, AFTER loading
-      require('which-key').setup()
-
-      -- Document existing key chains
-      require('which-key').register {
-        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
-        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
-        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
-        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
-        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
-        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
-        ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
-      }
-      -- visual mode
-      require('which-key').register({
-        ['<leader>h'] = { 'Git [H]unk' },
-      }, { mode = 'v' })
-    end,
+    --    config = function() -- This is the function that runs, AFTER loading
+    --      require('which-key').setup()
+    --
+    --      -- Document existing key chains
+    --      require('which-key').register {
+    --        ['<leader>c'] = { name = '[C]ode', _ = 'which_key_ignore' },
+    --        ['<leader>d'] = { name = '[D]ocument', _ = 'which_key_ignore' },
+    --        ['<leader>r'] = { name = '[R]ename', _ = 'which_key_ignore' },
+    --        ['<leader>s'] = { name = '[S]earch', _ = 'which_key_ignore' },
+    --        ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
+    --        ['<leader>t'] = { name = '[T]oggle', _ = 'which_key_ignore' },
+    --        ['<leader>h'] = { name = 'Git [H]unk', _ = 'which_key_ignore' },
+    --      }
+    --      -- visual mode
+    --      require('which-key').register({
+    --        ['<leader>h'] = { 'Git [H]unk' },
+    --      }, { mode = 'v' })
+    --    end,
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -791,7 +791,23 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'css',
+        'diff',
+        'html',
+        'javascript',
+        'lua',
+        'luadoc',
+        'markdown',
+        'python',
+        'tsx',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'yaml',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -833,8 +849,8 @@ require('lazy').setup({
   require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.

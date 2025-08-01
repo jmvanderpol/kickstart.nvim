@@ -4,275 +4,178 @@
 -- See the kickstart.nvim README for more information
 return {
   {
-    'nvim-tree/nvim-tree.lua',
+    'nvim-tree/nvim-web-devicons',
     config = function()
-      local use_icons, devicons = pcall(require, 'nvim-web-devicons')
-      local tree = require 'nvim-tree'
-      local function on_attach(bufnr)
-        local api = require 'nvim-tree.api'
-
-        local function opts(desc)
-          return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-        end
-
-        api.config.mappings.default_on_attach(bufnr)
-
-        vim.keymap.set('n', '<Leader>O', '', { buffer = bufnr })
-        vim.keymap.del('n', '<Leader>O', { buffer = bufnr })
-        vim.keymap.set('n', '<Leader>D', '', { buffer = bufnr })
-        vim.keymap.del('n', '<Leader>D', { buffer = bufnr })
-        vim.keymap.set('n', '<Leader>E', '', { buffer = bufnr })
-        vim.keymap.del('n', '<Leader>E', { buffer = bufnr })
-
-        vim.keymap.set('n', '<Leader>A', api.tree.expand_all, opts 'Expand All')
-        vim.keymap.set('n', '<Leader>?', api.tree.toggle_help, opts 'Help')
-        vim.keymap.set('n', '<Leader>C', api.tree.change_root_to_node, opts 'CD')
-        vim.keymap.set('n', '<Leader>P', function()
-          local node = api.tree.get_node_under_cursor()
-          print(node.absolute_path)
-        end, opts 'Print Node Path')
-
-        vim.keymap.set('n', '<Leader>Z', api.node.run.system, opts 'Run System')
-      end
-
-      tree.setup {
-        on_attach = on_attach,
-        auto_reload_on_write = false,
-        disable_netrw = false,
-        hijack_cursor = false,
-        hijack_netrw = true,
-        hijack_unnamed_buffer_when_opening = false,
-        sort_by = 'name',
-        root_dirs = {},
-        prefer_startup_root = false,
-        sync_root_with_cwd = true,
-        reload_on_bufenter = false,
-        respect_buf_cwd = false,
-        select_prompts = false,
-        view = {
-          adaptive_size = false,
-          centralize_selection = true,
-          width = 30,
-          side = 'left',
-          preserve_window_proportions = false,
-          number = false,
-          relativenumber = false,
-          signcolumn = 'yes',
-          float = {
-            enable = false,
-            quit_on_focus_loss = true,
-            open_win_config = {
-              relative = 'editor',
-              border = 'rounded',
-              width = 30,
-              height = 30,
-              row = 1,
-              col = 1,
-            },
+      require('nvim-web-devicons').setup {
+        -- your personal icons can go here (to override)
+        -- you can specify color or cterm_color instead of specifying both of them
+        -- DevIcon will be appended to `name`
+        override = {
+          zsh = {
+            icon = '',
+            color = '#428850',
+            cterm_color = '65',
+            name = 'Zsh',
           },
         },
-        renderer = {
-          add_trailing = false,
-          group_empty = false,
-          highlight_git = true,
-          full_name = false,
-          highlight_opened_files = 'none',
-          root_folder_label = ':t',
-          indent_width = 2,
-          indent_markers = {
-            enable = true,
-            inline_arrows = true,
-            icons = {
-              corner = '└',
-              edge = '│',
-              item = '│',
-              none = ' ',
-            },
+        -- globally enable different highlight colors per icon (default to true)
+        -- if set to false all icons will have the default icon's color
+        color_icons = true,
+        -- globally enable default icons (default to false)
+        -- will get overriden by `get_icons` option
+        default = true,
+        -- globally enable "strict" selection of icons - icon will be looked up in
+        -- different tables, first by filename, and if not found by extension; this
+        -- prevents cases when file doesn't have any extension but still gets some icon
+        -- because its name happened to match some extension (default to false)
+        strict = true,
+        -- set the light or dark variant manually, instead of relying on `background`
+        -- (default to nil)
+        variant = 'light|dark',
+      }
+    end,
+    opts = {},
+  },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+      'nvim-tree/nvim-web-devicons',
+    },
+    opts = {
+      sources = {
+        'filesystem',
+        'buffers',
+        'git_status',
+        'document_symbols',
+      },
+      source_selector = {
+        winbar = true,
+        statusline = false,
+      },
+      icon = {
+        folder_closed = '',
+        folder_open = '',
+        folder_empty = '󰉖',
+        folder_empty_open = '󰷏',
+        -- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
+        -- then these will never be used.
+        default = '*',
+        highlight = 'NeoTreeFileIcon',
+      },
+      filesystem = {
+        window = {
+          mappings = {
+            ['H'] = 'toggle_hidden',
+            ['/'] = 'fuzzy_finder',
+            --["/"] = {"fuzzy_finder", config = { keep_filter_on_submit = true }},
+            --["/"] = "filter_as_you_type", -- this was the default until v1.28
+            ['D'] = 'fuzzy_finder_directory',
+            -- ["D"] = "fuzzy_sorter_directory",
+            ['#'] = 'fuzzy_sorter', -- fuzzy sorting using the fzy algorithm
+            ['f'] = 'filter_on_submit',
+            ['<C-x>'] = 'clear_filter',
+            ['<bs>'] = 'navigate_up',
+            ['.'] = 'set_root',
+            ['[g'] = 'prev_git_modified',
+            [']g'] = 'next_git_modified',
+            ['i'] = 'show_file_details', -- see `:h neo-tree-file-actions` for options to customize the window.
+            ['b'] = 'rename_basename',
+            ['o'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'o' } },
+            ['oc'] = { 'order_by_created', nowait = false },
+            ['od'] = { 'order_by_diagnostics', nowait = false },
+            ['og'] = { 'order_by_git_status', nowait = false },
+            ['om'] = { 'order_by_modified', nowait = false },
+            ['on'] = { 'order_by_name', nowait = false },
+            ['os'] = { 'order_by_size', nowait = false },
+            ['ot'] = { 'order_by_type', nowait = false },
           },
-          icons = {
-            webdev_colors = vim.g.have_nerd_font,
-            git_placement = 'before',
-            padding = ' ',
-            symlink_arrow = ' ➛ ',
-            show = {
-              file = vim.g.have_nerd_font,
-              folder = vim.g.have_nerd_font,
-              folder_arrow = vim.g.have_nerd_font,
-              git = vim.g.have_nerd_font,
-            },
-            glyphs = {
-              default = '󰈔',
-              symlink = '󰈤',
-              bookmark = '󰃀',
-              folder = {
-                arrow_closed = '󰅂',
-                arrow_open = '󰅀',
-                default = '󰉋',
-                open = '󰉓',
-                empty = '󰉖',
-                empty_open = '󰉕',
-                symlink = '󰉒',
-                symlink_open = '󰉒',
-              },
-              git = {
-                unstaged = 'U',
-                staged = 'S',
-                unmerged = 'M',
-                renamed = 'R',
-                untracked = 'U',
-                deleted = 'D',
-                ignored = '◌',
+          fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
+            ['<down>'] = 'move_cursor_down',
+            ['<C-n>'] = 'move_cursor_down',
+            ['<up>'] = 'move_cursor_up',
+            ['<C-p>'] = 'move_cursor_up',
+            ['<Esc>'] = 'close',
+            ['<S-CR>'] = 'close_keep_filter',
+            ['<C-CR>'] = 'close_clear_filter',
+            ['<C-w>'] = { '<C-S-w>', raw = true },
+            {
+              -- normal mode mappings
+              n = {
+                ['j'] = 'move_cursor_down',
+                ['k'] = 'move_cursor_up',
+                ['<S-CR>'] = 'close_keep_filter',
+                ['<C-CR>'] = 'close_clear_filter',
+                ['<esc>'] = 'close',
               },
             },
-          },
-          special_files = { 'Cargo.toml', 'Makefile', 'README.md', 'readme.md' },
-          symlink_destination = true,
-        },
-        hijack_directories = {
-          enable = false,
-          auto_open = true,
-        },
-        update_focused_file = {
-          enable = true,
-          debounce_delay = 15,
-          update_root = true,
-          ignore_list = {},
-        },
-        diagnostics = {
-          enable = false,
-          show_on_dirs = false,
-          show_on_open_dirs = true,
-          debounce_delay = 50,
-          severity = {
-            min = vim.diagnostic.severity.HINT,
-            max = vim.diagnostic.severity.ERROR,
-          },
-          icons = {
-            hint = '󰁚',
-            info = '󰋽',
-            warning = '󰀪',
-            error = '󰀩',
+            -- ["<esc>"] = "noop", -- if you want to use normal mode
+            -- ["key"] = function(state, scroll_padding) ... end,
           },
         },
-        filters = {
-          dotfiles = false,
-          git_clean = false,
-          no_buffer = false,
-          custom = { 'node_modules', '\\.cache' },
-          exclude = {},
-        },
-        filesystem_watchers = {
-          enable = true,
-          debounce_delay = 50,
-          ignore_dirs = {},
-        },
-        git = {
-          enable = true,
-          ignore = false,
-          show_on_dirs = true,
-          show_on_open_dirs = true,
-          timeout = 200,
-        },
-        actions = {
-          use_system_clipboard = true,
-          change_dir = {
-            enable = true,
-            global = false,
-            restrict_above_cwd = false,
+        filtered_items = {
+          visible = false, -- when true, they will just be displayed differently than normal items
+          force_visible_in_empty_folder = false, -- when true, hidden files will be shown if the root folder is otherwise empty
+          children_inherit_highlights = true, -- whether children of filtered parents should inherit their parent's highlight group
+          show_hidden_count = true, -- when true, the number of hidden items in each folder will be shown as the last entry
+          hide_dotfiles = false,
+          hide_gitignored = true,
+          hide_hidden = true, -- only works on Windows for hidden files/directories
+          hide_by_name = {
+            '.DS_Store',
+            'thumbs.db',
+            --"node_modules",
           },
-          expand_all = {
-            max_folder_discovery = 300,
-            exclude = {},
+          hide_by_pattern = { -- uses glob style patterns
+            --"*.meta",
+            --"*/src/*/tsconfig.json"
           },
-          file_popup = {
-            open_win_config = {
-              col = 1,
-              row = 1,
-              relative = 'cursor',
-              border = 'shadow',
-              style = 'minimal',
-            },
+          always_show = { -- remains visible even if other settings would normally hide it
+            --".gitignored",
           },
-          open_file = {
-            quit_on_open = false,
-            resize_window = false,
-            window_picker = {
-              enable = true,
-              picker = 'default',
-              chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
-              exclude = {
-                filetype = { 'notify', 'lazy', 'qf', 'diff', 'fugitive', 'fugitiveblame' },
-                buftype = { 'nofile', 'terminal', 'help' },
-              },
-            },
+          always_show_by_pattern = { -- uses glob style patterns
+            --".env*",
           },
-          remove_file = {
-            close_window = true,
+          never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
+            --".DS_Store",
+            --"thumbs.db"
+          },
+          never_show_by_pattern = { -- uses glob style patterns
+            --".null-ls_*",
           },
         },
-        trash = {
-          cmd = 'trash',
-          require_confirm = true,
-        },
-        live_filter = {
-          prefix = '[FILTER]: ',
-          always_show_folders = true,
-        },
-        tab = {
-          sync = {
-            open = false,
-            close = false,
-            ignore = {},
+      },
+    },
+  },
+  {
+    'antosha417/nvim-lsp-file-operations',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-neo-tree/neo-tree.nvim', -- makes sure that this loads after Neo-tree.
+    },
+    config = function()
+      require('lsp-file-operations').setup()
+    end,
+  },
+  {
+    's1n7ax/nvim-window-picker',
+    version = '2.*',
+    config = function()
+      require('window-picker').setup {
+        filter_rules = {
+          include_current_win = false,
+          autoselect_one = true,
+          -- filter using buffer options
+          bo = {
+            -- if the file type is one of following, the window will be ignored
+            filetype = { 'neo-tree', 'neo-tree-popup', 'notify' },
+            -- if the buffer type is one of following, the window will be ignored
+            buftype = { 'terminal', 'quickfix' },
           },
-        },
-        notify = {
-          threshold = vim.log.levels.INFO,
-        },
-        log = {
-          enable = false,
-          truncate = false,
-          types = {
-            all = false,
-            config = false,
-            copy_paste = false,
-            dev = false,
-            diagnostics = false,
-            git = false,
-            profile = false,
-            watcher = false,
-          },
-        },
-        system_open = {
-          cmd = nil,
-          args = {},
         },
       }
-
-      local function open_nvim_tree_on_launch(data)
-        -- buffer is a real file on the disk
-        local real_file = vim.fn.filereadable(data.file) == 1
-        -- buffer is a [No Name]
-        local no_name = data.file == '' and vim.bo[data.buf].buftype == ''
-
-        if not real_file and not no_name then
-          return
-        end
-
-        -- open the tree, find the file but don't focus it
-        require('nvim-tree.api').tree.toggle { focus = false, find_file = true }
-      end
-
-      function NvimTreeCloseIfLast()
-        local only_one = vim.fn.tabpagenr '$' == 1 and vim.fn.winnr '$' == 1
-        local is_visible = require('nvim-tree.view').is_visible()
-
-        if only_one and is_visible then
-          vim.cmd 'quit'
-        end
-      end
-
-      vim.api.nvim_create_autocmd({ 'VimEnter' }, { callback = open_nvim_tree_on_launch })
-      vim.cmd 'autocmd BufEnter * lua NvimTreeCloseIfLast()'
     end,
   },
   {
@@ -280,6 +183,7 @@ return {
     config = function()
       local fm = require 'fluoromachine'
       fm.setup {
+        transparent = false,
         glow = true,
         theme = 'fluoromachine',
       }
@@ -308,19 +212,25 @@ return {
       -- Default configuration has a `window` that is non-`highlight`able
       -- editor has map on `side`: `right`
       -- with a `width` of `10`
-      local minimap = require 'mini.map'
-      minimap.setup {
-        symbols = {
-          encode = minimap.gen_encode_symbols.shade '1x2',
-        },
-      }
+      -- local minimap = require 'mini.map'
+      -- minimap.setup {
+      --   window = {
+      --     focusable = false,
+      --     side = 'right',
+      --     width = 10,
+      --     zindex = 100,
+      --   },
+      --   symbols = {
+      --     encode = minimap.gen_encode_symbols.dot '3x2',
+      --   },
+      -- }
 
-      vim.keymap.set('n', '<Leader>mc', MiniMap.close)
-      vim.keymap.set('n', '<Leader>mf', MiniMap.toggle_focus)
-      vim.keymap.set('n', '<Leader>mo', MiniMap.open)
-      vim.keymap.set('n', '<Leader>mr', MiniMap.refresh)
-      vim.keymap.set('n', '<Leader>ms', MiniMap.toggle_side)
-      vim.keymap.set('n', '<Leader>mt', MiniMap.toggle)
+      -- vim.keymap.set('n', '<Leader>mc', MiniMap.close)
+      -- vim.keymap.set('n', '<Leader>mf', MiniMap.toggle_focus)
+      -- vim.keymap.set('n', '<Leader>mo', MiniMap.open)
+      -- vim.keymap.set('n', '<Leader>mr', MiniMap.refresh)
+      -- vim.keymap.set('n', '<Leader>ms', MiniMap.toggle_side)
+      -- vim.keymap.set('n', '<Leader>mt', MiniMap.toggle)
 
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
@@ -346,6 +256,65 @@ return {
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
+  },
+  {
+    'lewis6991/gitsigns.nvim',
+    config = function()
+      local gitsigns = require 'gitsigns'
+    end,
+  },
+  {
+    'Isrothy/neominimap.nvim',
+    dependencies = { 'lewis6991/gitsigns.nvim' },
+    version = 'v3.*.*',
+    enabled = true,
+    lazy = false, -- NOTE: NO NEED to Lazy load
+    -- Optional
+    keys = {
+      -- Global Minimap Controls
+      { '<leader>nm', '<cmd>Neominimap toggle<cr>', desc = 'Toggle global minimap' },
+      { '<leader>no', '<cmd>Neominimap on<cr>', desc = 'Enable global minimap' },
+      { '<leader>nc', '<cmd>Neominimap off<cr>', desc = 'Disable global minimap' },
+      { '<leader>nr', '<cmd>Neominimap refresh<cr>', desc = 'Refresh global minimap' },
+
+      -- Window-Specific Minimap Controls
+      { '<leader>nwt', '<cmd>Neominimap winToggle<cr>', desc = 'Toggle minimap for current window' },
+      { '<leader>nwr', '<cmd>Neominimap winRefresh<cr>', desc = 'Refresh minimap for current window' },
+      { '<leader>nwo', '<cmd>Neominimap winOn<cr>', desc = 'Enable minimap for current window' },
+      { '<leader>nwc', '<cmd>Neominimap winOff<cr>', desc = 'Disable minimap for current window' },
+
+      -- Tab-Specific Minimap Controls
+      { '<leader>ntt', '<cmd>Neominimap tabToggle<cr>', desc = 'Toggle minimap for current tab' },
+      { '<leader>ntr', '<cmd>Neominimap tabRefresh<cr>', desc = 'Refresh minimap for current tab' },
+      { '<leader>nto', '<cmd>Neominimap tabOn<cr>', desc = 'Enable minimap for current tab' },
+      { '<leader>ntc', '<cmd>Neominimap tabOff<cr>', desc = 'Disable minimap for current tab' },
+
+      -- Buffer-Specific Minimap Controls
+      { '<leader>nbt', '<cmd>Neominimap bufToggle<cr>', desc = 'Toggle minimap for current buffer' },
+      { '<leader>nbr', '<cmd>Neominimap bufRefresh<cr>', desc = 'Refresh minimap for current buffer' },
+      { '<leader>nbo', '<cmd>Neominimap bufOn<cr>', desc = 'Enable minimap for current buffer' },
+      { '<leader>nbc', '<cmd>Neominimap bufOff<cr>', desc = 'Disable minimap for current buffer' },
+
+      ---Focus Controls
+      { '<leader>nf', '<cmd>Neominimap focus<cr>', desc = 'Focus on minimap' },
+      { '<leader>nu', '<cmd>Neominimap unfocus<cr>', desc = 'Unfocus minimap' },
+      { '<leader>ns', '<cmd>Neominimap toggleFocus<cr>', desc = 'Switch focus on minimap' },
+    },
+    init = function()
+      -- The following options are recommended when layout == "float"
+      vim.opt.wrap = false
+      vim.opt.sidescrolloff = 36 -- Set a large value
+
+      --- Put your configuration here
+      ---@type Neominimap.UserConfig
+      vim.g.neominimap = {
+        auto_enable = true,
+      }
+    end,
+  },
+  {
+    'prettier/vim-prettier',
+    config = function() end,
   },
   {
     'pmizio/typescript-tools.nvim',
@@ -397,4 +366,12 @@ return {
       }
     end,
   },
+  {
+    'github/copilot.vim',
+    config = function() end,
+  },
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns',
 }
