@@ -32,13 +32,6 @@ return {
         end
       end
       check()
-      vim.api.nvim_create_autocmd('DirChanged', {
-        callback = function()
-          if not loaded then
-            check()
-          end
-        end,
-      })
     end,
     opts = {},
   },

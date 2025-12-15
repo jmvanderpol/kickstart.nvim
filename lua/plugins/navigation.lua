@@ -33,51 +33,116 @@ return {
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
-
+    end,
+    keys = {
       -- See `:help telescope.builtin`
-      local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
+      { 'n', '<leader>sh', function() 
+        require('telescope.builtin').help_tags()
+      end, { desc = '[S]earch [H]elp' }},
+      { 'n', '<leader>sk', function()
+        require('telescope.builtin').keymaps()
+      end, { desc = '[S]earch [K]eymaps' }},
+      { 'n', '<leader>sf', function()
+        require('telescope.builtin').find_files()
+      end, { desc = '[S]earch [F]iles' }},
+      { 'n', '<leader>ss', function()
+        require('telescope.builtin').builtin()
+      end, { desc = '[S]earch [S]elect Telescope' }},
+      { 'n', '<leader>sw', function()
+        require('telescope.builtin').grep_string()
+      end, { desc = '[S]earch current [W]ord' }},
+      { 'n', '<leader>sg', function()
+        require('telescope.builtin').live_grep()
+      end, { desc = '[S]earch by [G]rep' }},
+      { 'n', '<leader>sd', function()
+        require('telescope.builtin').order_by_diagnostics()
+      end, { desc = '[S]earch [D]iagnostics' }},
+      { 'n', '<leader>sr', function()
+        require('telescope.builtin').resume()
+      end, { desc = '[S]earch [R]esume' }},
+      { 'n', '<leader>s.', function()
+        require('telescope.builtin').open_files_do_not_replace_types()
+      end, { desc = '[S]earch Recent Files ("." for repeat)' }},
+      { 'n', '<leader><leader>', function()
+        require('telescope.builtin').buffers()
+      end, { desc = '[ ] Find existing buffers' }},
+      
       -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>/', function()
+      {'n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+        require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
           winblend = 10,
           previewer = false,
         })
-      end, { desc = '[/] Fuzzily search in current buffer' })
+      end, { desc = '[/] Fuzzily search in current buffer' }},
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep {
+      { 'n', '<leader>s/', function()
+        require('telescope.builtin').live_grep {
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
         }
-      end, { desc = '[S]earch [/] in Open Files' })
+      end, { desc = '[S]earch [/] in Open Files' }},
 
       -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
-        builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
-    end,
+      { 'n', '<leader>sn', function()
+        require('telescope.builtin').find_files { cwd = vim.fn.stdpath 'config' }
+      end, { desc = '[S]earch [N]eovim files' }},
+    }
   },
   {
     'nvim-neo-tree/neo-tree.nvim',
-    branch = 'v3.x',
+    event = 'VimEnter',
+    branch = '*',
     dependencies = {
       'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
       'nvim-tree/nvim-web-devicons',
+      'folke/snacks.nvim',
+      '3rd/image.nvim',
+    },
+    cmd = 'Neotree',
+    init = function()
+      vim.api.nvim_create_autocmd('BufEnter', {
+        -- make a group to be able to delete it later
+        group = vim.api.nvim_create_augroup('NeoTreeInit', { clear = true }),
+        desc = 'Start Neo-tree with directory',
+        once = true,
+        callback = function()
+          if package.loaded['neo-tree'] then
+            return
+          else
+            local stats = vim.uv.fs_stat(vim.fn.argv(0))
+            if stats and stats.type == 'directory' then
+              require 'neo-tree'
+            end
+          end
+        end,
+      })
+    end,
+    keys = {
+      {
+        '<leader>ff',
+        function()
+          require('neo-tree.command').execute { toggle = true, dir = vim.uv.cwd() }
+        end,
+        desc = 'NeoTree: Explore (cwd)',
+      },
+      {
+        '<leader>fg',
+        function()
+          require('neo-tree.command').execute { source = 'git_status', toggle = true }
+        end,
+        desc = 'NeotTree: Explore Git',
+      },
+      {
+        '<leader>fb',
+        function()
+          require('neo-tree.command').execute { source = 'buffers', toggle = true }
+        end,
+        desc = 'NeoTree: Explore Buffers',
+      },
     },
     opts = {
       sources = {
@@ -101,6 +166,15 @@ return {
         highlight = 'NeoTreeFileIcon',
       },
       filesystem = {
+        bind_to_cwd = true, -- creates a 2-way binding between vim's cwd and neo-tree's root
+        cwd_target = {
+          sidebar = 'tab', -- sidebar is when position = left or right
+          current = 'window', -- current is when position = current
+        },
+        open_files_do_not_replace_types = {
+          'terminal',
+          'quickfix',
+        },
         window = {
           mappings = {
             ['H'] = 'toggle_hidden',
@@ -149,6 +223,7 @@ return {
             -- ["<esc>"] = "noop", -- if you want to use normal mode
             -- ["key"] = function(state, scroll_padding) ... end,
           },
+          position = 'left',
         },
         filtered_items = {
           visible = false, -- when true, they will just be displayed differently than normal items
@@ -168,10 +243,10 @@ return {
             --"*/src/*/tsconfig.json"
           },
           always_show = { -- remains visible even if other settings would normally hide it
-            --".gitignored",
+            '.gitignored',
           },
           always_show_by_pattern = { -- uses glob style patterns
-            --".env*",
+            '.env*',
           },
           never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
             --".DS_Store",

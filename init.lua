@@ -7,7 +7,7 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
--- Set netrw to disabled to replace with nvim-tree
+-- Set netrw to disabled to replace with neo-tree
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -15,12 +15,12 @@ vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_perl_provider = 1
 vim.g.loaded_php_provider = 1
 
-require 'custom.options'
-require 'custom.keymaps'
-require 'custom.autocommands'
-require 'custom.plugins'
-require 'custom.lsp-config'
-
+require 'environment'
+require 'config.options'
+require 'config.keymaps'
+require 'config.autocommands'
+require 'plugins.init'
+require 'plugins.lsp-config'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

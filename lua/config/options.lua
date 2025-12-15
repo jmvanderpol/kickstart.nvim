@@ -73,3 +73,7 @@ vim.opt.scrolloff = 10
 
 -- Set highlight on search
 vim.opt.hlsearch = true
+
+-- Use directory provided nvim configs
+-- looks for in order of priority: '.nvim.lua', '.nvimrc', '.exrc'
+vim.opt.exrc = true

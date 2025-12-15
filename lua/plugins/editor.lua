@@ -7,57 +7,102 @@ return {
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
-    opts = {
-      on_attach = function(bufnr)
-        local gitsigns = require 'gitsigns'
-
-        local function map(mode, l, r, opts)
-          opts = opts or {}
-          opts.buffer = bufnr
-          vim.keymap.set(mode, l, r, opts)
-        end
-
-        -- Navigation
-        map('n', ']c', function()
+    opts = {},
+    keys = {
+      -- Navigation
+      {
+        ']c',
+        function()
           if vim.wo.diff then
             vim.cmd.normal { ']c', bang = true }
           else
-            gitsigns.nav_hunk 'next'
+            require('gitsigns').nav_hunk 'next'
           end
-        end, { desc = 'Jump to next git [c]hange' })
-
-        map('n', '[c', function()
+        end,
+        desc = 'Jump to next git [c]hange',
+      },
+      {
+        '[c',
+        function()
           if vim.wo.diff then
             vim.cmd.normal { '[c', bang = true }
           else
-            gitsigns.nav_hunk 'prev'
+            require('gitsigns').nav_hunk 'prev'
           end
-        end, { desc = 'Jump to previous git [c]hange' })
+        end,
+        desc = 'Jump to previous git [c]hange',
+      },
 
-        -- Actions
-        -- visual mode
-        map('v', '<leader>hs', function()
-          gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
-        end, { desc = 'stage git hunk' })
-        map('v', '<leader>hr', function()
-          gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
-        end, { desc = 'reset git hunk' })
-        -- normal mode
-        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'git [s]tage hunk' })
-        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'git [r]eset hunk' })
-        map('n', '<leader>hS', gitsigns.stage_buffer, { desc = 'git [S]tage buffer' })
-        map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = 'git [u]ndo stage hunk' })
-        map('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'git [R]eset buffer' })
-        map('n', '<leader>hp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
-        map('n', '<leader>hb', gitsigns.blame_line, { desc = 'git [b]lame line' })
-        map('n', '<leader>hd', gitsigns.diffthis, { desc = 'git [d]iff against index' })
-        map('n', '<leader>hD', function()
-          gitsigns.diffthis '@'
-        end, { desc = 'git [D]iff against last commit' })
-        -- Toggles
-        map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show [b]lame line' })
-        map('n', '<leader>tD', gitsigns.toggle_deleted, { desc = '[T]oggle git show [D]eleted' })
-      end,
+      -- Actions
+      -- visual mode
+      { '<leader>h', group = 'GitSigns Hunk Operations' },
+      {
+        '<leader>hs',
+        "<cmd>Gitsigns stage_hunk :lua { vim.fn.line '.', vim.fn.line 'v' }<cr>",
+        mode = { 'v' },
+        desc = 'git [s]tage hunk',
+      },
+      {
+        '<leader>hr',
+        "<cmd>Gitsigns reset_hunk :lua { :vim.fn.line '.', vim.fn.line 'v'}<cr>",
+        mode = { 'v' },
+        desc = 'git [r]eset hunk',
+      },
+      {
+        '<leader>hs',
+        '<cmd>Gitsigns stage_hunk<cr>',
+        desc = 'git [s]tage hunk',
+      },
+      {
+        '<leader>hr',
+        '<cmd>Gitsigns reset_hunk<cr>',
+        desc = 'git [r]eset hunk',
+      },
+      {
+        '<leader>hS',
+        '<cmd>Gitsigns stage_hunk<cr>',
+        desc = 'git [S]tage buffer',
+      },
+      {
+        '<leader>hu',
+        '<cmd>Gitsigns undo_stage_hunk<cr>',
+        desc = 'git [u]ndo stage hunk',
+      },
+      {
+        '<leader>hR',
+        '<cmd>Gitsigns reset_buffer<cr>',
+        desc = 'git [R]eset buffer',
+      },
+      {
+        '<leader>hp',
+        '<cmd>Gitsigns preview_hunk<cr>',
+        desc = 'git [p]review hunk',
+      },
+      {
+        '<leader>hb',
+        '<cmd>Gitsigns blame_line<cr>',
+        desc = 'git [b]lame line',
+      },
+      {
+        '<leader>hd',
+        '<cmd>Gitsigns diffthis<cr>',
+        desc = 'git [d]iff against index',
+      },
+      {
+        '<leader>hD',
+        "<cmd>Gitsigns diffthis '@'<cr>",
+        desc = 'git [D]iff against last commit',
+      },
+      {
+        '<leader>tb',
+        '<cmd>gitsigns toggle_current_line_blame<cr>',
+        desc = '[T]oggle git show [b]lame line',
+      },
+      {
+        '<leader>tD',
+        '<cmd>Gitsigns toggle_deleted<cr>',
+        desc = '[T]oggle git show [D]eleted',
+      },
     },
   },
 
@@ -81,7 +126,7 @@ return {
       { '<leader>c_', group = '[C]ode', hidden = true },
       { '<leader>d', group = '[D]ocument' },
       { '<leader>d_', group = '[D]ocument', hidden = true },
-      { '<leader>h', group = 'Git [H]unk' },
+      { '<leader>h', group = 'Git Signs:' },
       { '<leader>h_', hidden = true },
       { '<leader>r', group = '[R]ename' },
       { '<leader>r_', hidden = true },
@@ -98,7 +143,7 @@ return {
   },
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-{ -- Highlight, edit, and navigate code
+  { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
@@ -187,6 +232,8 @@ return {
     lazy = false, -- NOTE: NO NEED to Lazy load
     -- Optional
     keys = {
+      { '<leader>n', group = 'NeoMiniMap' },
+      { '<leader>n_', hidden = true },
       -- Global Minimap Controls
       { '<leader>nm', '<cmd>Neominimap Toggle<cr>', desc = 'Toggle global minimap' },
       { '<leader>no', '<cmd>Neominimap Enable<cr>', desc = 'Enable global minimap' },
@@ -241,16 +288,50 @@ return {
     config = function() end,
   },
   {
-    'windwp/nvim-autopairs',
+    'saghen/blink.pairs',
+    version = '*',
     event = 'InsertEnter',
-    -- Optional dependency
-    dependencies = { 'hrsh7th/nvim-cmp' },
-    config = function()
-      require('nvim-autopairs').setup {}
-      -- If you want to automatically add `(` after selecting a function or method
-      local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
-      local cmp = require 'cmp'
-      cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
-    end,
+    -- download prebuilt binaries from github releases
+    dependencies = 'saghen/blink.download',
+    --- @module 'blink.pairs'
+    --- @type blink.pairs.Config
+    opts = {
+      mappings = {
+        -- you can call require("blink.pairs.mappings").enable()
+        -- and require("blink.pairs.mappings").disable()
+        -- to enable/disable mappings at runtime
+        enabled = true,
+        cmdline = true,
+        -- or disable with `vim.g.pairs = false` (global) and `vim.b.pairs = false` (per-buffer)
+        -- and/or with `vim.g.blink_pairs = false` and `vim.b.blink_pairs = false`
+        disabled_filetypes = {},
+        -- see the defaults:
+        -- https://github.com/Saghen/blink.pairs/blob/main/lua/blink/pairs/config/mappings.lua#L14
+        pairs = {},
+      },
+      highlights = {
+        enabled = true,
+        -- requires require('vim._extui').enable({}), otherwise has no effect
+        cmdline = true,
+        groups = {
+          'BlinkPairsOrange',
+          'BlinkPairsPurple',
+          'BlinkPairsBlue',
+        },
+        unmatched_group = 'BlinkPairsUnmatched',
+
+        -- highlights matching pairs under the cursor
+        matchparen = {
+          enabled = true,
+          -- known issue where typing won't update matchparen highlight, disabled by default
+          cmdline = false,
+          -- also include pairs not on top of the cursor, but surrounding the cursor
+          include_surrounding = false,
+          group = 'BlinkPairsMatchParen',
+          priority = 250,
+        },
+      },
+      debug = false,
+    },
   },
 }
