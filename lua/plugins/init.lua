@@ -16,6 +16,7 @@ require('lazy').setup({
   require 'plugins/colorscheme',
   require 'plugins/lsp',
   require 'plugins/chat',
+  require 'plugins/ai',
 
   { -- Autoformat
     'stevearc/conform.nvim',

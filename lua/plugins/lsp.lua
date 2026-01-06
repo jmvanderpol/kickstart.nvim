@@ -1,15 +1,23 @@
 return {
   -- LSP manager
   {
-    'mason-org/mason.nvim',
+    'mason-org/mason-lspconfig.nvim',
     opts = {
       ensure_installed = {
         'cmakelang',
         'cmakelint',
+        'js-debug-adapter',
+        'lua_ls',
+        'rust_analyzer',
+        'ts_ls',
+        'vtsls',
       },
     },
+    dependencies = {
+      { 'mason-org/mason.nvim', opts = {} },
+      'neovim/nvim-lspconfig',
+    },
   },
-  { 'williamboman/mason-lspconfig.nvim', opts = {} },
   { 'WhoIsSethDaniel/mason-tool-installer.nvim', opts = {} },
 
   -- Useful status updates for LSP.
