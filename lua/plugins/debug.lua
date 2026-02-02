@@ -404,6 +404,13 @@ return {
         desc = '[D]ebug: Open DAP-[U]I',
       },
       {
+        '<leader>dx',
+        function()
+          require('dapui').close()
+        end,
+        desc = '[Debug]: Close DAP-[U]I',
+      },
+      {
         '<leader>db',
         function()
           require('dap').toggle_breakpoint()

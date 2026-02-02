@@ -269,41 +269,6 @@ require('lazy').setup({
       },
     },
   },
-  {
-    'dlants/magenta.nvim',
-    lazy = false, -- you could also bind to <leader>mt
-    build = 'npm install --frozen-lockfile',
-    opts = {
-      profiles = {
-        {
-          name = 'copilot-gpt',
-          provider = 'copilot',
-          model = 'gpt-4.1',
-          fastModel = 'gpt-4o', -- optional, defaults provided
-        },
-      },
-      sidbarposition = 'right',
-      picker = 'telescope',
-      maxConcurrentSubAgents = 3,
-      chimeVolume = 0.3,
-      getFileAutoAllowGlobs = {
-        'node_modules/*',
-      },
-      sidebarKeymaps = {
-        normal = {
-          ['<CR>'] = ':Megenta send<CR>',
-        },
-      },
-    },
-  },
-  {
-    'zbirenbaum/copilot.lua',
-    cmd = 'Copilot',
-    event = 'InsertEnter',
-    config = function()
-      require('copilot').setup {}
-    end,
-  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
