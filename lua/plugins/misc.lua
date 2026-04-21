@@ -1,23 +1,4 @@
--- [[ Configure and install plugins ]]
---
---  To check the current status of your plugins, run
---    :Lazy
---
---  You can press `?` in this menu for help. Use `:q` to close the window
---
---  To update plugins you can run
---    :Lazy update
---
-
-require('lazy').setup({
-  require 'plugins/navigation',
-  require 'plugins.debug',
-  require 'plugins/editor',
-  require 'plugins/colorscheme',
-  require 'plugins/lsp',
-  require 'plugins/chat',
-  require 'plugins/ai',
-
+return {
   { -- Autoformat
     'stevearc/conform.nvim',
     lazy = false,
@@ -59,38 +40,17 @@ require('lazy').setup({
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       local lint = require 'lint'
-      lint.linters_by_ft = {
-        markdown = { 'markdownlint' },
-      }
+      lint.linters_by_ft = lint.linters_by_ft or {}
+      lint.linters_by_ft['markdown'] = { 'markdownlint' }
 
-      -- To allow other plugins to add linters to require('lint').linters_by_ft,
-      -- instead set linters_by_ft like this:
-      -- lint.linters_by_ft = lint.linters_by_ft or {}
-      -- lint.linters_by_ft['markdown'] = { 'markdownlint' }
-      --
-      -- However, note that this will enable a set of default linters,
-      -- which will cause errors unless these tools are available:
-      -- {
-      --   clojure = { "clj-kondo" },
-      --   dockerfile = { "hadolint" },
-      --   inko = { "inko" },
-      --   janet = { "janet" },
-      --   json = { "jsonlint" },
-      --   markdown = { "vale" },
-      --   rst = { "vale" },
-      --   ruby = { "ruby" },
-      --   terraform = { "tflint" },
-      --   text = { "vale" }
-      -- }
-      --
-      -- You can disable the default linters by setting their filetypes to nil:
-      -- lint.linters_by_ft['clojure'] = nil
+      -- Disabling the default linters by setting their filetypes to nil:
+      lint.linters_by_ft['clojure'] = nil
       -- lint.linters_by_ft['dockerfile'] = nil
-      -- lint.linters_by_ft['inko'] = nil
-      -- lint.linters_by_ft['janet'] = nil
+      lint.linters_by_ft['inko'] = nil
+      lint.linters_by_ft['janet'] = nil
       -- lint.linters_by_ft['json'] = nil
       -- lint.linters_by_ft['markdown'] = nil
-      -- lint.linters_by_ft['rst'] = nil
+      lint.linters_by_ft['rst'] = nil
       -- lint.linters_by_ft['ruby'] = nil
       -- lint.linters_by_ft['terraform'] = nil
       -- lint.linters_by_ft['text'] = nil
@@ -241,12 +201,12 @@ require('lazy').setup({
       { '<leader>tn', '<cmd>NeoTermToggle<cr>', desc = 'Toggle NeoTerm window' },
       { '<leader>tt', '<cmd>NeoTermEnterNormal<cr>', desc = 'Enter Normal Mode in NeoTerm' },
     },
-    config = {},
+    opts = {},
   },
   {
     'epwalsh/obsidian.nvim',
     event = 'VimEnter',
-    version = '*', -- recommended, use latest release instead of latest commit
+    version = '3.9.0', -- recommended, use latest release instead of latest commit
     lazy = true,
     ft = 'markdown',
     dependencies = {
@@ -269,24 +229,4 @@ require('lazy').setup({
       },
     },
   },
-}, {
-  ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
-  },
-})
+}

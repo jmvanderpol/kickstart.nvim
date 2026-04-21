@@ -1,5 +1,28 @@
 return {
   {
+    'kode-team/mastodon.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'rcarriga/nvim-notify',
+      'kkharji/sqlite.lua',
+    },
+    opts = {},
+    keys = {
+      {
+        {
+          '<leader>m',
+          group = 'Mastodon Buffer Commands',
+          desc = 'Mastodon: Buffer related commands',
+        },
+        {
+          '<leader>mr',
+          '<cmd>MastodonBuffer reload<cr>',
+          desc = '[M]astodon: [R]eload buffer statuses',
+        },
+      },
+    },
+  },
+  {
     'shadmansaleh/IRC.nvim',
     event = 'VimEnter',
     rocks = {

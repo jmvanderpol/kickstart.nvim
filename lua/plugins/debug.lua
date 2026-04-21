@@ -34,14 +34,13 @@ return {
         -- online, please don't ask me how to install them :)
         ensure_installed = {
           -- Update this to ensure that you have the debuggers for the langs you want
-          'chrome',
           'cppdbg',
           'delve',
           'firefox',
           'javadbg',
+          'javatest',
           'js',
           'kotin',
-          'node2',
           'python',
         },
 
@@ -140,39 +139,6 @@ return {
                   '!**/node_modules/**',
                 },
               },
-              {
-                name = 'Launch',
-                type = 'node2',
-                request = 'launch',
-                program = '${file}',
-                cwd = vim.fn.getcwd(),
-                sourceMaps = true,
-                protocol = 'inspector',
-                console = 'NeoTerm',
-                skipFiles = {
-                  '<node_internals>/**',
-                  'node_modules/**',
-                },
-                resolveSourceMapLocations = {
-                  '${workspaceFolder}/**',
-                  '!**/node_modules/**',
-                },
-              },
-              {
-                -- For this to work you need to make sure the node process is started with the `--inspect` flag.
-                name = 'Attach to process',
-                type = 'node2',
-                request = 'attach',
-                processId = require('dap.utils').pick_process,
-                skipFiles = {
-                  '<node_internals>/**',
-                  'node_modules/**',
-                },
-                resolveSourceMapLocations = {
-                  '${workspaceFolder}/**',
-                  '!**/node_modules/**',
-                },
-              },
             }
             require('mason-nvim-dap').default_setup(config) -- don't forget this!
           end,
@@ -184,39 +150,6 @@ return {
                 request = 'launch',
                 program = '${file}',
                 cwd = '${workspaceFolder}',
-                skipFiles = {
-                  '<node_internals>/**',
-                  'node_modules/**',
-                },
-                resolveSourceMapLocations = {
-                  '${workspaceFolder}/**',
-                  '!**/node_modules/**',
-                },
-              },
-              {
-                name = 'Launch',
-                type = 'node2',
-                request = 'launch',
-                program = '${file}',
-                cwd = vim.fn.getcwd(),
-                sourceMaps = true,
-                protocol = 'inspector',
-                console = 'integratedTerminal',
-                skipFiles = {
-                  '<node_internals>/**',
-                  'node_modules/**',
-                },
-                resolveSourceMapLocations = {
-                  '${workspaceFolder}/**',
-                  '!**/node_modules/**',
-                },
-              },
-              {
-                -- For this to work you need to make sure the node process is started with the `--inspect` flag.
-                name = 'Attach to process',
-                type = 'node2',
-                request = 'attach',
-                processId = require('dap.utils').pick_process,
                 skipFiles = {
                   '<node_internals>/**',
                   'node_modules/**',
@@ -393,7 +326,6 @@ return {
           detached = vim.fn.has 'win32' == 0,
         },
       }
-      require('javadb').setup {}
     end,
     keys = {
       {

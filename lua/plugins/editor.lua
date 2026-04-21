@@ -105,6 +105,10 @@ return {
       },
     },
   },
+  {
+    'sindrets/diffview.nvim',
+    opts = {},
+  },
 
   --  Use: event = 'VimEnter'
   --
