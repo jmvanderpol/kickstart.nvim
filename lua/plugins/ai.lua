@@ -1,11 +1,31 @@
 return {
   {
-    'zbirenbaum/copilot.lua',
-    cmd = 'Copilot',
-    event = 'InsertEnter',
+    'ishiooon/codex.nvim',
+    dependencies = { 'folke/snacks.nvim' },
     config = function()
-      require('copilot').setup {}
+      require('codex').setup {
+        env = {
+          CODEX_NVIM_NOTIFY_PATH = '/tmp/codex.nvim/notify.jsonl',
+        },
+        status_indicator = {
+          cli_notify_path = '/tmp/codex.nvim/notify.jsonl',
+          turn_active_timeout_ms = 300000,
+          turn_idle_timeout_ms = 2000,
+          inflight_timeout_ms = 300000,
+        },
+      }
     end,
+    keys = {
+      { '<leader>cdx', '<cmd>Codex<cr>', desc = 'AI: [C]o[d]e[x]: Toggle' },
+      { '<leader>cf', '<cmd>CodexFocus<cr>', desc = 'AI: [C]odex: [F]ocus' },
+      { '<leader>cs', '<cmd>CodexSend<cr>', mode = 'v', desc = 'AI: [C]odex: [S]end selection' },
+      {
+        'cf',
+        '<cmd>CodexTreeAdd<cr>',
+        desc = 'AI: [C]odex: Add [f]ile',
+        ft = { 'neo-tree', 'oil' },
+      },
+    },
   },
   {
     'greggh/claude-code.nvim',
@@ -38,9 +58,9 @@ return {
     end,
     keys = {
       {
-        '<leader>ac',
+        '<leader>cld',
         '<cmd>ClaudeCode<cr>',
-        desc = '[A]I: ClaudeCode Terminal',
+        desc = 'AI: [Cl]au[d]eCode Terminal',
       },
     },
   },

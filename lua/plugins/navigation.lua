@@ -136,201 +136,128 @@ return {
     },
   },
   {
-    'nvim-neo-tree/neo-tree.nvim',
-    event = 'VimEnter',
-    branch = 'v3.x',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'MunifTanjim/nui.nvim',
-      'nvim-tree/nvim-web-devicons',
-      'folke/snacks.nvim',
-      '3rd/image.nvim',
-    },
-    cmd = 'Neotree',
-    init = function()
-      vim.api.nvim_create_autocmd('BufEnter', {
-        -- make a group to be able to delete it later
-        group = vim.api.nvim_create_augroup('NeoTreeInit', { clear = true }),
-        desc = 'Start Neo-tree with directory',
-        once = true,
-        callback = function()
-          if package.loaded['neo-tree'] then
-            return
-          else
-            local stats = vim.uv.fs_stat(vim.fn.argv(0))
-            if stats and stats.type == 'directory' then
-              require 'neo-tree'
-            end
-          end
-        end,
-      })
-    end,
-    keys = {
-      {
-        '<leader>ff',
-        function()
-          require('neo-tree.command').execute { toggle = true, dir = vim.uv.cwd() }
-        end,
-        desc = 'NeoTree: Explore (cwd)',
-      },
-      {
-        '<leader>fg',
-        function()
-          require('neo-tree.command').execute { source = 'git_status', toggle = true }
-        end,
-        desc = 'NeotTree: Explore Git',
-      },
-      {
-        '<leader>fb',
-        function()
-          require('neo-tree.command').execute { source = 'buffers', toggle = true }
-        end,
-        desc = 'NeoTree: Explore Buffers',
-      },
-    },
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
     opts = {
-      sources = {
-        'filesystem',
-        'buffers',
-        'git_status',
-        'document_symbols',
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+      bigfile = { enabled = true },
+      bufdelete = { enabled = true },
+      dashboard = { enabled = true },
+      explorer = {
+        enabled = true,
+        replace_netrw = true,
+        trash = true,
       },
-      source_selector = {
-        winbar = true,
-        statusline = false,
+      indent = { enabled = true },
+      input = { enabled = true },
+      picker = { enabled = true },
+      notifier = {
+        enabled = true,
+        timeout = 3000, -- default timeout in ms
+        width = { min = 40, max = 0.4 },
+        height = { min = 1, max = 0.6 },
+        -- editor margin to keep free. tabline and statusline are taken into account automatically
+        margin = { top = 0, right = 1, bottom = 0 },
+        padding = true, -- add 1 cell of left/right padding to the notification window
+        gap = 0, -- gap between notifications
+        sort = { 'level', 'added' }, -- sort by level and time
+        -- minimum log level to display. TRACE is the lowest
+        -- all notifications are stored in history
+        level = vim.log.levels.TRACE,
+        icons = {
+          error = ' ',
+          warn = ' ',
+          info = ' ',
+          debug = ' ',
+          trace = ' ',
+        },
+        keep = function(notif)
+          return vim.fn.getcmdpos() > 0
+        end,
+        ---@type snacks.notifier.style
+        style = 'compact',
+        top_down = true, -- place notifications from top to bottom
+        date_format = '%R', -- time format for notifications
+        -- format for footer when more lines are available
+        -- `%d` is replaced with the number of lines.
+        -- only works for styles with a border
+        ---@type string|boolean
+        more_format = ' ↓ %d lines ',
+        refresh = 50, -- refresh at most every 50ms
       },
-      icon = {
-        folder_closed = '',
-        folder_open = '',
-        folder_empty = '󰉖',
-        folder_empty_open = '󰷏',
-        -- The next two settings are only a fallback, if you use nvim-web-devicons and configure default icons there
-        -- then these will never be used.
-        default = '*',
-        highlight = 'NeoTreeFileIcon',
+      quickfile = { enabled = true },
+      scope = { enabled = true },
+      scroll = { enabled = true },
+      statuscolumn = { enabled = true },
+      terminal = {
+        enabled = true,
+        win = { style = 'terminal' },
       },
-      filesystem = {
-        bind_to_cwd = true, -- creates a 2-way binding between vim's cwd and neo-tree's root
-        cwd_target = {
-          sidebar = 'tab', -- sidebar is when position = left or right
-          current = 'window', -- current is when position = current
-        },
-        open_files_do_not_replace_types = {
-          'terminal',
-          'quickfix',
-        },
-        window = {
-          mappings = {
-            ['H'] = 'toggle_hidden',
-            ['/'] = 'fuzzy_finder',
-            --["/"] = {"fuzzy_finder", config = { keep_filter_on_submit = true }},
-            --["/"] = "filter_as_you_type", -- this was the default until v1.28
-            ['D'] = 'fuzzy_finder_directory',
-            -- ["D"] = "fuzzy_sorter_directory",
-            ['#'] = 'fuzzy_sorter', -- fuzzy sorting using the fzy algorithm
-            ['f'] = 'filter_on_submit',
-            ['<C-x>'] = 'clear_filter',
-            ['<bs>'] = 'navigate_up',
-            ['.'] = 'set_root',
-            ['[g'] = 'prev_git_modified',
-            [']g'] = 'next_git_modified',
-            ['i'] = 'show_file_details', -- see `:h neo-tree-file-actions` for options to customize the window.
-            ['b'] = 'rename_basename',
-            ['o'] = { 'show_help', nowait = false, config = { title = 'Order by', prefix_key = 'o' } },
-            ['oc'] = { 'order_by_created', nowait = false },
-            ['od'] = { 'order_by_diagnostics', nowait = false },
-            ['og'] = { 'order_by_git_status', nowait = false },
-            ['om'] = { 'order_by_modified', nowait = false },
-            ['on'] = { 'order_by_name', nowait = false },
-            ['os'] = { 'order_by_size', nowait = false },
-            ['ot'] = { 'order_by_type', nowait = false },
-          },
-          fuzzy_finder_mappings = { -- define keymaps for filter popup window in fuzzy_finder_mode
-            ['<down>'] = 'move_cursor_down',
-            ['<C-n>'] = 'move_cursor_down',
-            ['<up>'] = 'move_cursor_up',
-            ['<C-p>'] = 'move_cursor_up',
-            ['<Esc>'] = 'close',
-            ['<S-CR>'] = 'close_keep_filter',
-            ['<C-CR>'] = 'close_clear_filter',
-            ['<C-w>'] = { '<C-S-w>', raw = true },
-            {
-              -- normal mode mappings
-              n = {
-                ['j'] = 'move_cursor_down',
-                ['k'] = 'move_cursor_up',
-                ['<S-CR>'] = 'close_keep_filter',
-                ['<C-CR>'] = 'close_clear_filter',
-                ['<esc>'] = 'close',
-              },
-            },
-            -- ["<esc>"] = "noop", -- if you want to use normal mode
-            -- ["key"] = function(state, scroll_padding) ... end,
-          },
-          position = 'left',
-        },
-        filtered_items = {
-          visible = false, -- when true, they will just be displayed differently than normal items
-          force_visible_in_empty_folder = false, -- when true, hidden files will be shown if the root folder is otherwise empty
-          children_inherit_highlights = true, -- whether children of filtered parents should inherit their parent's highlight group
-          show_hidden_count = true, -- when true, the number of hidden items in each folder will be shown as the last entry
-          hide_dotfiles = false,
-          hide_gitignored = true,
-          hide_hidden = true, -- only works on Windows for hidden files/directories
-          hide_by_name = {
-            '.DS_Store',
-            'thumbs.db',
-            --"node_modules",
-          },
-          hide_by_pattern = { -- uses glob style patterns
-            --"*.meta",
-            --"*/src/*/tsconfig.json"
-          },
-          always_show = { -- remains visible even if other settings would normally hide it
-            '.gitignored',
-          },
-          always_show_by_pattern = { -- uses glob style patterns
-            '.env*',
-          },
-          never_show = { -- remains hidden even if visible is toggled to true, this overrides always_show
-            --".DS_Store",
-            --"thumbs.db"
-          },
-          never_show_by_pattern = { -- uses glob style patterns
-            --".null-ls_*",
-          },
-        },
-      },
+      words = { enabled = true },
+    },
+    keys = {
+      -- Snacks File Explorer Key Bindings
+      { '<leader>ft', '<cmd>lua Snacks.explorer.reveal()<cr>', desc = '[F]ile Explorer: Open explorer pane.' },
+
+      -- Snacks Terminal Key Bindings
+      { '<leader>tn', '<cmd>lua Snacks.ternimal.open()<cr>', desc = '[T]erminal: Open [n]ew terminal window.' },
+      { '<leader>tn', '<cmd>lua Snacks.terminal.toggle()<cr>', desc = '[T]erminal: [T]oggle terminal window.' },
     },
   },
   {
-    'antosha417/nvim-lsp-file-operations',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-neo-tree/neo-tree.nvim', -- makes sure that this loads after Neo-tree.
-    },
-    config = function()
-      require('lsp-file-operations').setup()
+    'folke/edgy.nvim',
+    event = 'VeryLazy',
+    init = function()
+      vim.opt.laststatus = 3
+      vim.opt.splitkeep = 'screen'
     end,
-  },
-  {
-    's1n7ax/nvim-window-picker',
-    version = '2.*',
-    config = function()
-      require('window-picker').setup {
-        filter_rules = {
-          include_current_win = false,
-          autoselect_one = true,
-          -- filter using buffer options
-          bo = {
-            -- if the file type is one of following, the window will be ignored
-            filetype = { 'neo-tree', 'neo-tree-popup', 'notify' },
-            -- if the buffer type is one of following, the window will be ignored
-            buftype = { 'terminal', 'quickfix' },
-          },
+    opts = {
+      left = {}, ---@type (Edgy.View.Opts|string)[]
+      bottom = {
+        {
+          ft = 'snacks_terminal',
+          title = 'Terminal',
         },
-      }
-    end,
+        { ft = 'qf', title = 'QuickFix' },
+        {
+          ft = 'help',
+          size = {},
+          -- only show help buffers
+          filter = function(buf)
+            return vim.bo[buf].buftype == 'help'
+          end,
+        },
+        {
+          ft = 'spectre_panel',
+        },
+      }, ---@type (Edgy.View.Opts|string)[]
+      right = {
+        {
+          ft = 'touble',
+          title = 'Trouble',
+        },
+      }, ---@type (Edgy.View.Opts|string)[]
+      top = {}, ---@type (Edgy.View.Opts|string)[]
+
+      ---@type table<Edgy.Pos, {size:integer | fun():integer, wo?:vim.wo}>
+      options = {
+        left = { size = 20 },
+        right = { size = 20 },
+        bottom = { size = 20 },
+        top = { size = 10 },
+      },
+      -- edgebar animations
+      animate = {
+        enabled = false, -- animation seems to cause layout issues
+        fps = 100, -- frames per second
+        cps = 120, -- cells per second
+      },
+      exit_when_last = true,
+    },
   },
   {
     'nvim-zh/colorful-winsep.nvim',
@@ -399,9 +326,13 @@ return {
     end,
     opts = {
       animation = true,
+      buffer_number = true,
       focus_on_close = true,
       insert_at_end = true,
       highlight_visible = true,
+      sidebar_filetypes = {
+        snacks_picker_list = true,
+      },
     },
     version = '^1.0.0', -- optional: only update when a new 1.x version is released
   },

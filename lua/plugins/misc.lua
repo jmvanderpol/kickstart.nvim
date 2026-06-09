@@ -152,7 +152,6 @@ return {
       require('mini.fuzzy').setup()
 
       require('mini.notify').setup()
-      require('mini.starter').setup()
 
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
@@ -196,14 +195,6 @@ return {
     end,
   },
   {
-    'nyngwang/NeoTerm.lua',
-    keys = {
-      { '<leader>tn', '<cmd>NeoTermToggle<cr>', desc = 'Toggle NeoTerm window' },
-      { '<leader>tt', '<cmd>NeoTermEnterNormal<cr>', desc = 'Enter Normal Mode in NeoTerm' },
-    },
-    opts = {},
-  },
-  {
     'epwalsh/obsidian.nvim',
     event = 'VimEnter',
     version = '3.9.0', -- recommended, use latest release instead of latest commit
@@ -227,6 +218,20 @@ return {
           path = '~/Documents/Work/Thorne/Thorne',
         },
       },
+    },
+  },
+  {
+    'mistweaverco/kulala.nvim',
+    keys = {
+      { '<leader>Rs', desc = 'Send request' },
+      { '<leader>Ra', desc = 'Send all requests' },
+      { '<leader>Rb', desc = 'Open scratchpad' },
+    },
+    ft = { 'http', 'rest' },
+    opts = {
+      global_keymaps = false,
+      global_keymaps_prefix = '<leader>R',
+      kulala_keymaps_prefix = '',
     },
   },
 }
