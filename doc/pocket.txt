@@ -1,0 +1,27 @@
+================================================================================
+INTRODUCTION                                                     *pocket.nvim*
+
+Pocket.nvim is a name for my personal neovim configuration. I began my journy 
+with the humble and straight-forward Kickstart.nvim project.
+
+                                                            *pocket-is-not*
+It is not:
+- Complete framework for every plugin under the sun
+- Right for everyone
+
+                                                                *pocket-is*
+It is:
+- Somewhere you might like to start with that has common "IDE" type features:
+    - autocompletion
+    - goto-definition
+    - find references
+    - fuzzy finding
+    - colorsheme/theme
+    - debugging
+    - error/warning integration
+    - AI integration
+- Has some opinionated "non-coding" features
+    - IRC chat
+    - Mastodon client
+
+ vim:tw=78:ts=8:ft=help:norl:
