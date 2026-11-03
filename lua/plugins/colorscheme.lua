@@ -1,7 +1,9 @@
 return {
   {
     'catppuccin/nvim',
+    lazy = false,
     name = 'catppuccin',
+    priority = 1000,
     opt = {
       flavour = 'macchiato', -- latte, frappe, macchiato, mocha
       auto_integrations = true,

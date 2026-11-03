@@ -2,6 +2,7 @@ return {
   -- LSP manager
   {
     'mason-org/mason-lspconfig.nvim',
+    lazy = false,
     opts = {
       ensure_installed = {
         'azure_pipelines_ls',
@@ -46,19 +47,19 @@ return {
       },
     },
     dependencies = {
-      { 'mason-org/mason.nvim', opts = {} },
-      'neovim/nvim-lspconfig',
+      { 'mason-org/mason.nvim', lazy = false, opts = {} },
+      { 'neovim/nvim-lspconfig', lazy = false, opt = {} },
     },
   },
-  { 'WhoIsSethDaniel/mason-tool-installer.nvim', opts = {} },
+  { 'WhoIsSethDaniel/mason-tool-installer.nvim', lazy = false, opts = {} },
 
   -- Useful status updates for LSP.
   -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-  { 'j-hui/fidget.nvim', opts = {} },
+  { 'j-hui/fidget.nvim', lazy = false, opts = {} },
 
   -- `neodev` configures Lua LSP for your Neovim config, runtime and plugins
   -- providing for completion, annotations and signatures of Neovim APIs
-  { 'folke/neodev.nvim', opts = {} },
+  { 'folke/neodev.nvim', lazy = false, opts = {} },
   {
     'Civitasv/cmake-tools.nvim',
     lazy = true,
@@ -97,6 +98,7 @@ return {
     ---@type vim.lsp.Config
     'pmizio/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    ft = { 'ts', 'vue', 'js' },
     opts = {},
     config = function()
       require('typescript-tools').setup {

@@ -1,8 +1,7 @@
 -- Set <space> as the leader key
 -- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+--  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used
 vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
@@ -15,11 +14,25 @@ vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_perl_provider = 1
 vim.g.loaded_php_provider = 1
 
+-- Setup leanpack.nvim plugin manager
+vim.pack.add { { src = 'https://github.com/ntk148v/leanpack.nvim' } }
+
+-- Setup leanpack with import from lua/plugins/
+require('leanpack').setup {
+  { import = 'plugins' },
+  defaults = {
+    lazy = true,
+  },
+  performance = {
+    vim_loader = true,
+    rtp_prune = true,
+  },
+}
+
 require 'environment'
 require 'config.options'
 require 'config.keymaps'
 require 'config.autocommands'
-require 'config.lazy'
 require 'config.lsp-config'
 
 -- The line beneath this is called `modeline`. See `:help modeline`

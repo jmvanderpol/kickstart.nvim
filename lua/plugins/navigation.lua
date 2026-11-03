@@ -1,7 +1,7 @@
 return {
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    event = 'VimEnter',
+    lazy = false,
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -146,7 +146,7 @@ return {
       -- refer to the configuration section below
       bigfile = { enabled = true },
       bufdelete = { enabled = true },
-      dashboard = { enabled = true },
+      dashboard = { enabled = false },
       explorer = {
         enabled = true,
         replace_netrw = true,
@@ -210,7 +210,7 @@ return {
   },
   {
     'folke/edgy.nvim',
-    event = 'VeryLazy',
+    lazy = false,
     init = function()
       vim.opt.laststatus = 3
       vim.opt.splitkeep = 'screen'
@@ -262,6 +262,7 @@ return {
   {
     'nvim-zh/colorful-winsep.nvim',
     event = { 'WinLeave' },
+    lazy = false,
     opt = {
       -- choose between "single", "rounded", "bold" and "double".
       -- Or pass a table like this: { "─", "│", "┌", "┐", "└", "┘" },
@@ -300,6 +301,7 @@ return {
   },
   {
     'sindrets/winshift.nvim',
+    lazy = false,
     config = function()
       require('winshift').setup {}
     end,
@@ -317,6 +319,7 @@ return {
   },
   {
     'romgrk/barbar.nvim',
+    lazy = false,
     dependencies = {
       'lewis6991/gitsigns.nvim',
       'nvim-tree/nvim-web-devicons',

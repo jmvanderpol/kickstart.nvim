@@ -38,6 +38,7 @@ return {
   { -- Linting
     'mfussenegger/nvim-lint',
     event = { 'BufReadPre', 'BufNewFile' },
+    lazy = false,
     config = function()
       local lint = require 'lint'
       lint.linters_by_ft = lint.linters_by_ft or {}
@@ -59,6 +60,7 @@ return {
   {
     'saghen/blink.cmp',
     dependencies = { 'rafamadriz/friendly-snippets' },
+    lazy = false,
     version = '*',
     opts = {
       -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
@@ -132,6 +134,7 @@ return {
   },
   { -- Collection of various small independent plugins/modules
     'nvim-mini/mini.nvim',
+    lazy = false,
     config = function()
       -- Better Around/Inside textobject
       --
@@ -179,6 +182,7 @@ return {
   },
   {
     'kristijanhusak/vim-dadbod-ui',
+    lazy = false,
     dependencies = {
       { 'tpope/vim-dadbod', lazy = true },
       { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql' }, lazy = true }, -- Optional
@@ -196,7 +200,6 @@ return {
   },
   {
     'epwalsh/obsidian.nvim',
-    event = 'VimEnter',
     version = '3.9.0', -- recommended, use latest release instead of latest commit
     lazy = true,
     ft = 'markdown',
@@ -212,16 +215,13 @@ return {
         {
           name = 'Personal',
           path = '~/Library/Mobile Documents/iCloud~md~obsidian/Documents',
-        },
-        {
-          name = 'Thorne',
-          path = '~/Documents/Work/Thorne/Thorne',
-        },
+        }
       },
     },
   },
   {
     'mistweaverco/kulala.nvim',
+    lazy = false,
     keys = {
       { '<leader>Rs', desc = 'Send request' },
       { '<leader>Ra', desc = 'Send all requests' },

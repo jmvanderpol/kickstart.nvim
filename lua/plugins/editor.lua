@@ -1,12 +1,20 @@
 return {
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  {
+    'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+    lazy = false,
+  },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  {
+    'numToStr/Comment.nvim',
+    lazy = false,
+    opts = {},
+  },
 
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
+    lazy = false,
     opts = {},
     keys = {
       -- Navigation
@@ -107,10 +115,12 @@ return {
   },
   {
     'sindrets/diffview.nvim',
+    event = 'BufReadPre',
     opts = {},
   },
   { -- A pretty list for showing diagnostics, references, telescope results, quickfix and location lists
     'folke/trouble.nvim',
+    lazy = false,
     opts = {}, -- for default options, refer to the configuration section for custom setup.
     cmd = 'Trouble',
     keys = {
@@ -148,7 +158,11 @@ return {
   },
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    lazy = false,
+    init = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+    end,
     opts = {
       preset = 'helix',
     },
@@ -174,9 +188,10 @@ return {
     },
   },
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  { 'folke/todo-comments.nvim', event = 'BufReadPre', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    lazy = false,
     build = ':TSUpdate',
     opts = {
       ensure_installed = {
@@ -226,6 +241,7 @@ return {
   },
   {
     'nvim-tree/nvim-web-devicons',
+    event = 'BufReadPre',
     config = function()
       require('nvim-web-devicons').setup {
         -- your personal icons can go here (to override)
@@ -262,7 +278,7 @@ return {
     dependencies = { 'lewis6991/gitsigns.nvim' },
     version = 'v3.*.*',
     enabled = true,
-    lazy = false, -- NOTE: NO NEED to Lazy load
+    lazy = false,
     -- Optional
     keys = {
       { '<leader>n', group = 'NeoMiniMap' },
@@ -310,24 +326,26 @@ return {
   },
   { -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help ibl`
-    main = 'ibl',
+    enabled = true,
+    main = 'ibl', -- See `:help ibl`
     opts = {},
   },
   {
     'prettier/vim-prettier',
-    event = 'VimEnter',
+    event = 'BufReadPre',
     config = function() end,
   },
   {
     'saghen/blink.pairs',
-    version = '*',
-    event = 'InsertEnter',
+    version = 'main',
+    event = 'BufNew',
     -- download prebuilt binaries from github releases
     dependencies = 'saghen/blink.download',
     --- @module 'blink.pairs'
     --- @type blink.pairs.Config
+    build = function()
+      require('blink.pairs').download():pwait(60000)
+    end,
     opts = {
       mappings = {
         -- you can call require("blink.pairs.mappings").enable()
