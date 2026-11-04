@@ -25,13 +25,22 @@ return {
         }
       end,
       formatters_by_ft = {
-        lua = { 'stylua' },
+        css = { 'prettierd', 'prettier', stop_after_first = true },
+        go = { 'gofmt', stop_after_first = true },
+        http = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        json = { 'prettierd', 'prettier', stop_after_first = true },
+        lua = { 'stylua', stop_after_first = true },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        javascript = { { 'prettierd', 'prettier' } },
+        markdown = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        rust = { 'rustfmt', stop_after_first = true },
+        vue = { 'prettierd', 'prettier', stop_after_first = true },
+        yaml = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
