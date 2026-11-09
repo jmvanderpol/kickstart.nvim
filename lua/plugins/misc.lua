@@ -229,6 +229,12 @@ return {
     },
     ft = { 'http', 'rest' },
     opts = {
+      treesitter = {
+        enable = vim.fn.executable('tree-sitter') == 1
+          or vim.fn.executable(vim.fn.stdpath('data') .. '/mason/bin/tree-sitter') == 1,
+        cli_path = vim.fn.executable('tree-sitter') == 1 and 'tree-sitter'
+          or vim.fn.stdpath('data') .. '/mason/bin/tree-sitter',
+      },
       global_keymaps = false,
       global_keymaps_prefix = '<leader>R',
       kulala_keymaps_prefix = '',

@@ -9,16 +9,14 @@ return {
     opts = {},
     keys = {
       {
-        {
-          '<leader>m',
-          group = 'Mastodon Buffer Commands',
-          desc = 'Mastodon: Buffer related commands',
-        },
-        {
-          '<leader>mr',
-          '<cmd>MastodonBuffer reload<cr>',
-          desc = '[M]astodon: [R]eload buffer statuses',
-        },
+        '<leader>m',
+        group = 'Mastodon Buffer Commands',
+        desc = 'Mastodon: Buffer related commands',
+      },
+      {
+        '<leader>mr',
+        '<cmd>MastodonBuffer reload<cr>',
+        desc = '[M]astodon: [R]eload buffer statuses',
       },
     },
   },

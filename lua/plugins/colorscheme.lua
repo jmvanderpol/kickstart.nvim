@@ -4,7 +4,7 @@ return {
     lazy = false,
     name = 'catppuccin',
     priority = 1000,
-    opt = {
+    opts = {
       flavour = 'macchiato', -- latte, frappe, macchiato, mocha
       auto_integrations = true,
       color_overrides = {

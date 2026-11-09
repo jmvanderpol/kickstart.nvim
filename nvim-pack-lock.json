@@ -23,17 +23,25 @@
       "src": "https://github.com/saghen/blink.download"
     },
     "blink.pairs": {
-      "rev": "ef8fc29c8afa0fc1d0eb611a1a76fd87f0951f6e",
+      "rev": "c382bc4ba0229211c8ae19491bb7aa930c051a42",
       "src": "https://github.com/saghen/blink.pairs",
-      "version": "'main'"
+      "version": "'v0.7.1'"
     },
     "catppuccin": {
       "rev": "edefef779ab08ce1a4a404713e3012b0d202bd35",
       "src": "https://github.com/catppuccin/nvim"
     },
+    "claude-code.nvim": {
+      "rev": "55c0cb59828fbc3bec744288286a46f5d5750b83",
+      "src": "https://github.com/greggh/claude-code.nvim"
+    },
     "cmake-tools.nvim": {
       "rev": "782a254c62a61af1d4febddd0d6dbc5ea414a027",
       "src": "https://github.com/Civitasv/cmake-tools.nvim"
+    },
+    "codex.nvim": {
+      "rev": "35e1f0ca76887a8e675dd4e329578a67f8f07273",
+      "src": "https://github.com/ishiooon/codex.nvim"
     },
     "colorful-winsep.nvim": {
       "rev": "6134b5cd4a38990c7b720adc90973ed32f726179",

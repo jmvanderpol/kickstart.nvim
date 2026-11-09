@@ -40,12 +40,6 @@ return {
         group = 'Telescope',
         desc = 'Telescope Search:',
       },
-      {
-        'leader>sf',
-        '<cmd>Telescope find_files<cr>',
-        desc = '[S]earch [F]iles',
-        mode = { 'n', 'v' },
-      },
       -- See `:help telescope.builtin`
       {
         '<leader>sh',
@@ -263,7 +257,7 @@ return {
     'nvim-zh/colorful-winsep.nvim',
     event = { 'WinLeave' },
     lazy = false,
-    opt = {
+    opts = {
       -- choose between "single", "rounded", "bold" and "double".
       -- Or pass a table like this: { "─", "│", "┌", "┐", "└", "┘" },
       border = 'bold',

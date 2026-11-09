@@ -8,22 +8,21 @@ return {
         'azure_pipelines_ls',
         'clangd',
         'cmake',
-        'cpptools',
         'cssls',
         'denols',
         'dockerls',
-        'esling',
+        'eslint',
         'gopls',
         'gradle_ls',
         'graphql',
         'groovyls',
         'html',
         'jdtls',
-        'java-language-server',
+        'java_language_server',
         'jsonls',
         'kotlin_language_server',
         'kotlin_lsp',
-        'ltex-ls-plus',
+        'ltex_plus',
         'lua_ls',
         'mesonlsp',
         'nginx_language_server',
@@ -34,7 +33,6 @@ return {
         'stylua',
         'svelte',
         'tailwindcss',
-        'terraform_lsp',
         'terraformls',
         'ty',
         'ts_ls',
@@ -42,16 +40,21 @@ return {
         'vtsls',
         'vue_ls',
         'wasm_language_tools',
-        'wc_language_server',
         'yamlls',
       },
     },
     dependencies = {
       { 'mason-org/mason.nvim', lazy = false, opts = {} },
-      { 'neovim/nvim-lspconfig', lazy = false, opt = {} },
+      { 'neovim/nvim-lspconfig', lazy = false, opts = {} },
     },
   },
-  { 'WhoIsSethDaniel/mason-tool-installer.nvim', lazy = false, opts = {} },
+  {
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    lazy = false,
+    opts = {
+      ensure_installed = { 'cpptools', 'tree-sitter-cli', 'wc-language-server' },
+    },
+  },
 
   -- Useful status updates for LSP.
   -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -62,18 +65,7 @@ return {
   { 'folke/neodev.nvim', lazy = false, opts = {} },
   {
     'Civitasv/cmake-tools.nvim',
-    lazy = true,
-    init = function()
-      local loaded = false
-      local function check()
-        local cwd = vim.uv.cwd()
-        if vim.fn.filereadable(cwd .. '/CMakeLists.txt') == 1 then
-          require('lazy').load { plugins = { 'cmake-tools.nvim' } }
-          loaded = true
-        end
-      end
-      check()
-    end,
+    ft = 'cmake',
     opts = {},
   },
   {
