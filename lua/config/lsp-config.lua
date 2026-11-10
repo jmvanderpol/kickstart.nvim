@@ -1,5 +1,5 @@
-return {
-  {
+local servers = {
+  azure_pipelines_ls = {
     -- src: https://github.com/microsoft/azure-pipelines-language-server
     ---@type vim.lsp.Config
     -- `azure-pipelines-ls` can be installed via `npm`:
@@ -18,7 +18,7 @@ return {
       },
     },
   },
-  {
+  vue_ls = {
     -- src: https://github.com/vuejs/language-tools/tree/master/packages/language-server
     -- The Vue language server works in "hybrid mode" that exclusively manages the CSS/HTML sections.
     -- You need the `vtsls` server with the `@vue/typescript-plugin` plugin to support TypeScript in `.vue` files.
@@ -70,8 +70,7 @@ return {
       client.handlers['tsserver/request'] = typescriptHandler
     end,
   },
-  {},
-  {
+  vtsls = {
     cmd = { 'vtsls', '--stdio' },
     init_options = {
       hostInfo = 'neovim',
@@ -79,10 +78,8 @@ return {
     filetypes = {
       'javascript',
       'javascriptreact',
-      'javascript.jsx',
       'typescript',
       'typescriptreact',
-      'typescript.tsx',
     },
     settings = {
       complete_function_calls = true,
@@ -111,7 +108,6 @@ return {
         },
       },
     },
-    keys = {},
     root_dir = function(bufnr, on_dir)
       -- The project root is where the LSP can be started from
       -- As stated in the documentation above, this LSP supports monorepos and simple projects.
@@ -132,21 +128,21 @@ return {
       on_dir(project_root)
     end,
   },
-  {
+  terraformls = {
     -- src: https://github.com/hashicorp/terraform-ls
     ---@type vim.lsp.Config
     cmd = { 'terraform-ls', 'serve' },
     filetypes = { 'terraform', 'terraform-vars' },
     root_markers = { '.terraform', '.git' },
   },
-  {
+  ty = {
     -- src: https://github.com/neovim/nvim-lspconfig/blob/master/lsp/ty.lua
     ---@type vim.lsp.Config
     cmd = { 'ty', 'server' },
     filetypes = { 'python' },
     root_markers = { 'ty.toml', 'pyproject.toml', '.git' },
   },
-  {
+  wasm_language_tools = {
     -- src: https://github.com/g-plane/wasm-language-tools
     -- WebAssembly Language Tools aims to provide and improve the editing experience of WebAssembly Text Format.
     -- It also provides an out-of-the-box formatter (a.k.a. pretty printer) for WebAssembly Text Format.
@@ -154,5 +150,10 @@ return {
     cmd = { 'wat_server' },
     filetypes = { 'wat' },
   },
-  vim.lsp.enable { 'azure-pipelines-language-server', 'vue-language-server', 'vtsls', 'terraform-ls', 'ty', 'wat_server' },
 }
+
+for name, config in pairs(servers) do
+  vim.lsp.config(name, config)
+end
+
+-- mason-lspconfig activates installed servers selected by config.machine.

@@ -4,5 +4,6 @@ test.sh
 nvim
 
 lua/environment.lua
+environment.json
 spell/
 lazy-lock.json

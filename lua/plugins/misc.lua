@@ -6,7 +6,7 @@ return {
       {
         '<leader>cf',
         function()
-          require('conform').format { async = true, lsp_fallback = true }
+          require('conform').format { async = true, lsp_format = 'fallback' }
         end,
         mode = '',
         desc = '[F]ormat buffer',
@@ -15,13 +15,13 @@ return {
     opts = {
       notify_on_error = false,
       format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
+        -- Disable LSP formatting on save for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
         return {
           timeout_ms = 500,
-          lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
+          lsp_format = disable_filetypes[vim.bo[bufnr].filetype] and 'never' or 'fallback',
         }
       end,
       formatters_by_ft = {
@@ -29,9 +29,8 @@ return {
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        javascript = { { 'prettierd', 'prettier' } },
+        -- Run the first available JavaScript formatter.
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -215,29 +214,8 @@ return {
         {
           name = 'Personal',
           path = '~/Library/Mobile Documents/iCloud~md~obsidian/Documents',
-        }
+        },
       },
-    },
-  },
-  {
-    'mistweaverco/kulala.nvim',
-    lazy = false,
-    keys = {
-      { '<leader>Rs', desc = 'Send request' },
-      { '<leader>Ra', desc = 'Send all requests' },
-      { '<leader>Rb', desc = 'Open scratchpad' },
-    },
-    ft = { 'http', 'rest' },
-    opts = {
-      treesitter = {
-        enable = vim.fn.executable('tree-sitter') == 1
-          or vim.fn.executable(vim.fn.stdpath('data') .. '/mason/bin/tree-sitter') == 1,
-        cli_path = vim.fn.executable('tree-sitter') == 1 and 'tree-sitter'
-          or vim.fn.stdpath('data') .. '/mason/bin/tree-sitter',
-      },
-      global_keymaps = false,
-      global_keymaps_prefix = '<leader>R',
-      kulala_keymaps_prefix = '',
     },
   },
 }

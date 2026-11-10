@@ -194,36 +194,28 @@ return {
     lazy = false,
     build = ':TSUpdate',
     config = function()
-      local languages = {
-        'bash',
-        'c',
-        'css',
-        'diff',
-        'html',
-        'http',
-        'javascript',
-        'lua',
-        'luadoc',
-        'markdown',
-        'python',
-        'tsx',
-        'typescript',
-        'vim',
-        'vimdoc',
-        'yaml',
-      }
+      local languages = require('config.machine').treesitter_parsers
 
-      if vim.fn.executable('tree-sitter') == 1 then
+      if vim.fn.executable 'tree-sitter' == 1 then
         require('nvim-treesitter').install(languages)
       end
 
-      local filetypes = vim.deepcopy(languages)
-      vim.list_extend(filetypes, { 'help', 'typescriptreact', 'typescript.tsx' })
+      local filetypes = {}
+      for _, language in ipairs(languages) do
+        vim.list_extend(filetypes, vim.treesitter.language.get_filetypes(language))
+      end
+
+      if #filetypes == 0 then
+        return
+      end
 
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
         callback = function(event)
-          vim.treesitter.start(event.buf)
+          -- A parser may still be downloading on the first startup.
+          if not pcall(vim.treesitter.start, event.buf) then
+            return
+          end
           vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
         end,
       })
