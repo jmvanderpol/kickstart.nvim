@@ -141,6 +141,7 @@ plugins; it is not needed for these language lists. Debug adapter selections in
 | `lua/config/autocommands.lua` | Yank highlighting, lint triggers, and other editor events |
 | `lua/config/languages.lua` | Shared language server, tool, and parser defaults |
 | `lua/config/machine.lua` | Local JSON loading and validation |
+| `lua/config/startup-stats.lua` | Leanpack load counts and startup timing for the dashboard |
 | `lua/config/lsp-config.lua` | Shared custom LSP server configurations |
 | `lua/plugins/` | Active Leanpack plugin specifications |
 | `nvim-pack-lock.json` | Native package lockfile recording plugin sources and revisions |
@@ -162,7 +163,7 @@ plugin's configuration.
 | Git and diagnostics | Gitsigns, Diffview, Trouble, and TODO comments |
 | Formatting and linting | Conform, nvim-lint, and vim-prettier |
 | Debugging | nvim-dap, DAP UI, virtual text, Mason debug adapters, and Go support |
-| Appearance | Catppuccin, icons, indentation guides, and Neominimap |
+| Appearance | Snacks dashboard, Catppuccin, icons, indentation guides, and Neominimap |
 | Additional integrations | Codex, Claude Code, Dadbod database UI, Obsidian, Mastodon, and IRC |
 
 Conform formats on save with a 500 ms timeout. Lua uses StyLua; JavaScript tries
@@ -195,6 +196,13 @@ Keep credentials out of tracked files.
 
 The leader key is **Space**. Press it and pause to see Which-key's available
 mappings, or use `:Telescope keymaps` to search them.
+
+The Snacks dashboard shows loaded/total plugins from Leanpack's loading state
+and provides a Leanpack shortcut. Skipped entries are excluded. Counts are
+recalculated when the dashboard renders, while startup time is captured once at
+`UIEnter`, measured from the beginning of `init.lua`. This is elapsed configuration
+startup time, rather than Lazy's process CPU timing; it stays fixed when the
+dashboard is reopened. The footer does not depend on `lazy.stats`.
 
 | Key | Action |
 | --- | --- |

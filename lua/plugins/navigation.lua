@@ -140,7 +140,36 @@ return {
       -- refer to the configuration section below
       bigfile = { enabled = true },
       bufdelete = { enabled = true },
-      dashboard = { enabled = false },
+      dashboard = {
+        enabled = true,
+        preset = {
+          keys = {
+            { icon = ' ', key = 'f', desc = 'Find File', action = ":lua Snacks.dashboard.pick('files')" },
+            { icon = ' ', key = 'n', desc = 'New File', action = ':ene | startinsert' },
+            { icon = ' ', key = 'g', desc = 'Find Text', action = ":lua Snacks.dashboard.pick('live_grep')" },
+            { icon = ' ', key = 'r', desc = 'Recent Files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
+            { icon = ' ', key = 'c', desc = 'Config', action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+            { icon = ' ', key = 's', desc = 'Restore Session', section = 'session' },
+            { icon = '󰒲 ', key = 'L', desc = 'Leanpack', action = ':Leanpack' },
+            { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
+          },
+        },
+        sections = {
+          { section = 'header' },
+          { section = 'keys', gap = 1, padding = 1 },
+          function()
+            local stats = require('config.startup-stats').get()
+            return {
+              align = 'center',
+              text = {
+                { ('%d/%d'):format(stats.loaded, stats.total), hl = 'special' },
+                { ' plugins loaded · startup ', hl = 'footer' },
+                { stats.startup_ms and ('%.1f ms'):format(stats.startup_ms) or 'pending', hl = 'special' },
+              },
+            }
+          end,
+        },
+      },
       explorer = {
         enabled = true,
         replace_netrw = true,
